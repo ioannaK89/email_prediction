@@ -1,5 +1,4 @@
 require 'yaml'
-require 'pry'
 
 class User
 
@@ -34,17 +33,17 @@ class User
     all.find { |user| user.domain == domain }
   end
 
-  private
-
   #
-  # the purpose of this methos is to provide a more readable
+  # the purpose of this method is to provide a more readable
   # represenation of the initiale data structure.
   #
   def self.build(users)
     users.map{|h| new(h.keys[0], h.values[0]) }
   end
+  private_class_method :build
 
   def self.records
     YAML.load_file('config/db.yml')[:users]
   end
+  private_class_method :records
 end
