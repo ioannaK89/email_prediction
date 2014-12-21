@@ -26,6 +26,10 @@ class User
     @username.split(' ').last.downcase
   end
 
+  def self.find_by_domain(domain)
+    all.find { |user| user[:domain] == domain }
+  end
+
   private
 
   #

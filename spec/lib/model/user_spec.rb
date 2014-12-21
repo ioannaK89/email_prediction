@@ -56,4 +56,19 @@ describe User do
       end
     end
   end
+
+  describe '#find_by_domain' do
+    context 'When domain exists in the database' do
+
+      before do
+        allow(described_class).to receive(:all).and_return([user])
+      end
+
+      let(:user) { { name: 'John Ferguson', domain: 'alphasights.com' } }
+
+      it 'returns the user' do
+        expect(described_class.find_by_domain('alphasights.com')).to eq(user)
+      end
+    end
+  end
 end
