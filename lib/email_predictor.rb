@@ -1,0 +1,2 @@
+class EmailPredictor
+end
