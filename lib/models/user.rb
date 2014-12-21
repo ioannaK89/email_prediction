@@ -1,11 +1,30 @@
 require 'yaml'
+require 'pry'
 
 class User
+
+  attr_reader :username, :domain
 
   def self.all
     build(records)
   end
 
+  def self.domain_exists?(domain)
+    all.any? { |user| user[:domain] == domain }
+  end
+
+  def initialize(username, domain)
+    @username = username
+    @domain = domain
+  end
+
+  def first_name
+    @username.split(' ').first.downcase
+  end
+
+  def last_name
+    @username.split(' ').last.downcase
+  end
 
   private
 
@@ -21,5 +40,3 @@ class User
     YAML.load_file('config/db.yml')[:users]
   end
 end
-
-User.all
