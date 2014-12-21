@@ -3,7 +3,7 @@ require 'spec_helper'
 describe User do
 
   describe '.new' do
-    let(:user) { described_class.new('John Ferguson', 'alphasights.com') }
+    let(:user) { described_class.new('John Ferguson', 'j.f@alphasights.com') }
 
     it "should initialize a user with username" do
       expect(user.username).to eq('John Ferguson')
@@ -15,19 +15,21 @@ describe User do
   end
 
   describe '.all' do
-    let(:excepted_user) { { users: ['Joanna' => 'alphasights.com'] } }
+    let(:excepted_user) { { users: ['Joanna' => 'joanna@alphasights.com'] } }
+    let(:user) { double }
 
     before do
       allow(YAML).to receive(:load_file).with('config/db.yml').and_return(excepted_user)
+      allow(described_class).to receive(:new).with('Joanna', 'joanna@alphasights.com').and_return(user)
     end
 
     it "should read and format all users from the database" do
-      expect(User.all).to eq([{:name=>"Joanna", :domain=>"alphasights.com"}])
+      expect(User.all).to eq([user])
     end
   end
 
   describe '#first_name' do
-    let(:user) { described_class.new('John Ferguson', 'alphasights.com') }
+    let(:user) { described_class.new('John Ferguson', 'j.f@alphasights.com') }
 
     it "should return the first name" do
       expect(user.first_name).to eq('john')
@@ -35,7 +37,7 @@ describe User do
   end
 
   describe '#last_name' do
-    let(:user) { described_class.new('John Ferguson', 'alphasights.com') }
+    let(:user) { described_class.new('John Ferguson', 'j.f@alphasights.com') }
 
     it "should return the last name" do
       expect(user.last_name).to eq('ferguson')
@@ -49,7 +51,7 @@ describe User do
         allow(described_class).to receive(:all).and_return([user])
       end
 
-      let(:user) { { name: 'John Ferguson', domain: 'alphasights.com' } }
+      let(:user) { described_class.new('John Ferguson', 'j.f@alphasights.com') }
 
       it 'returns true' do
         expect(described_class.domain_exists?('alphasights.com')).to eq(true)
@@ -57,18 +59,26 @@ describe User do
     end
   end
 
-  describe '#find_by_domain' do
+  describe '.find_by_domain' do
     context 'When domain exists in the database' do
 
       before do
         allow(described_class).to receive(:all).and_return([user])
       end
 
-      let(:user) { { name: 'John Ferguson', domain: 'alphasights.com' } }
+      let(:user) { described_class.new('John Ferguson', 'j.f@alphasights.com') }
 
       it 'returns the user' do
         expect(described_class.find_by_domain('alphasights.com')).to eq(user)
       end
+    end
+  end
+
+  describe '#domain' do
+    let(:user) { described_class.new('John Ferguson', 'j.f@alphasights.com') }
+
+    it 'returns the domain from the email' do
+      expect(user.domain).to eq('alphasights.com')
     end
   end
 end

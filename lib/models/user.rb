@@ -3,19 +3,19 @@ require 'pry'
 
 class User
 
-  attr_reader :username, :domain
+  attr_reader :username, :email
 
   def self.all
     build(records)
   end
 
   def self.domain_exists?(domain)
-    all.any? { |user| user[:domain] == domain }
+    all.any? { |user| user.domain == domain }
   end
 
-  def initialize(username, domain)
+  def initialize(username, email)
     @username = username
-    @domain = domain
+    @email = email
   end
 
   def first_name
@@ -26,8 +26,12 @@ class User
     @username.split(' ').last.downcase
   end
 
+  def domain
+    email.split('@').last
+  end
+
   def self.find_by_domain(domain)
-    all.find { |user| user[:domain] == domain }
+    all.find { |user| user.domain == domain }
   end
 
   private
@@ -37,7 +41,7 @@ class User
   # represenation of the initiale data structure.
   #
   def self.build(users)
-    users.map{|h| {name: h.keys[0], domain: h.values[0]}}
+    users.map{|h| new(h.keys[0], h.values[0]) }
   end
 
   def self.records
