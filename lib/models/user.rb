@@ -13,7 +13,7 @@ class User
     all.any? { |user| user.domain == domain }
   end
 
-  def initialize(username, email)
+  def initialize(username, email = nil)
     @username = username
     @email = email
   end

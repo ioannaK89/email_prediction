@@ -10,7 +10,15 @@ describe User do
     end
 
     it "should initialize a user with domain" do
-      expect(user.domain).to eq('alphasights.com')
+      expect(user.email).to eq('j.f@alphasights.com')
+    end
+
+    context 'when email is missing' do
+      let(:user) { described_class.new('John Ferguson') }
+
+      it "should default email to nil" do
+        expect(user.email).to be_nil
+      end
     end
   end
 
